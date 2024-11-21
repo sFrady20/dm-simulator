@@ -7,9 +7,12 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 import { Toggle, ToggleOption } from "./ui/toggle";
 import { MultilineInput } from "./ui/multiline-input";
+import TimeInput from "./ui/time-input";
+import { create } from "zustand";
+import { immer } from "zustand/middleware/immer";
+import { TimeValue } from "react-aria-components";
 
 const messageVariants = cva(
   "rounded-lg border border-border/50 bg-background px-2 py-1.5 text-xs shadow-xl w-auto",
@@ -48,51 +51,53 @@ export function EditorPreview() {
         {messages.map((msg) => (
           <div key={msg.id} className={cn(messageVariants({ type: msg.type }))}>
             <div>{msg.text}</div>
+            <div className="text-xs text-muted-foreground">
+              {msg.type === "sent" ? "Sent" : "Received"} at{" "}
+              {msg.time?.toString()}
+            </div>
           </div>
-        ))}{" "}
+        ))}
       </div>
     </div>
   );
 }
 
+const editor = create(
+  immer<{
+    type: "sent" | "received";
+    message: string;
+    time: TimeValue | null;
+  }>((set) => ({
+    type: "received",
+    message: "",
+    time: null,
+  }))
+);
+
 export const EditorFields = () => {
   const app = useApp();
 
   const avatarUrl = app((x) => x.contactAvatarUrl);
-  const avatarFileName = app((x) => x.contactAvatarFileName);
   const name = app((x) => x.contactName);
-  const messages = app((x) => x.messages);
 
-  const [newMessage, setNewMessage] = useState("");
-  const [editingMessage, setEditingMessage] = useState<number | null>(null);
+  const newMessageType = editor((x) => x.type);
+  const newMessage = editor((x) => x.message);
+  const newMessageTime = editor((x) => x.time);
 
   const addMessage = () => {
-    if (newMessage.trim()) {
+    if (newMessage.trim() && !!newMessageTime) {
       app.setState((x) => {
         x.messages.push({
           id: Date.now(),
           text: newMessage,
-          type: "sent", // You can adjust this as needed
+          type: newMessageType,
+          time: newMessageTime,
         });
       });
-      setNewMessage("");
+      editor.setState((x) => {
+        x.message = "";
+      });
     }
-  };
-
-  const editMessage = (id: number, newText: string) => {
-    app.setState((x) => {
-      const messageIndex = x.messages.findIndex((m) => m.id === id);
-      if (messageIndex !== -1) {
-        x.messages[messageIndex].text = newText;
-      }
-    });
-    setEditingMessage(null);
-  };
-
-  const removeMessage = (id: number) => {
-    app.setState((x) => {
-      x.messages = x.messages.filter((m) => m.id !== id);
-    });
   };
 
   return (
@@ -107,25 +112,39 @@ export const EditorFields = () => {
             })
           }
         />
-        <div>
+        <div className="flex flex-col gap-2">
           <Input
             value={name}
             onChange={(e) => app.setState({ contactName: e.target.value })}
           />
+          <Toggle>
+            <ToggleOption>Android</ToggleOption>
+            <ToggleOption>iPhone</ToggleOption>
+          </Toggle>
         </div>
       </div>
       <div className="mt-4">
         <h3>Add Message</h3>
         <div className="flex flex-col gap-2">
+          <Toggle>
+            <ToggleOption>Received</ToggleOption>
+            <ToggleOption>Sent</ToggleOption>
+          </Toggle>
           <MultilineInput
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={(e) =>
+              editor.setState((x) => {
+                x.message = e.target.value;
+              })
+            }
             placeholder="New message"
           />
-          <Toggle>
-            <ToggleOption>To Me</ToggleOption>
-            <ToggleOption>From Me</ToggleOption>
-          </Toggle>
+          <TimeInput
+            value={newMessageTime || undefined}
+            onValueChange={(x) => {
+              editor.setState({ time: x });
+            }}
+          />
           <Button onClick={addMessage}>Add</Button>
         </div>
       </div>
