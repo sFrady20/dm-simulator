@@ -25,7 +25,7 @@ export const Phone = forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      style={{ "--screen-background": "white", ...style }}
+      style={{ "--screen-background": "white", ...style } as any}
       {...rest}
     >
       <Suspense fallback={"Loading..."}>{children}</Suspense>
