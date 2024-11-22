@@ -13,6 +13,13 @@ import TimeInput from "./ui/time-input";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { TimeValue } from "react-aria-components";
+import {
+  Phone,
+  PhoneBezel,
+  PhoneContent,
+  PhoneInterface,
+  PhoneScreen,
+} from "./phone";
 
 const messageVariants = cva(
   "rounded-lg border border-border/50 bg-background px-2 py-1.5 text-xs shadow-xl w-auto",
@@ -36,28 +43,15 @@ export function EditorPreview() {
 
   return (
     <div>
-      <div className="flex flex-row items-center justify-center gap-4">
-        <Image
-          src={url || ""}
-          alt={fileName || ""}
-          width={100}
-          height={100}
-          className="rounded-full"
-        />
-        <div>{name}</div>
-      </div>
-
-      <div className="flex flex-col gap-4">
-        {messages.map((msg) => (
-          <div key={msg.id} className={cn(messageVariants({ type: msg.type }))}>
-            <div>{msg.text}</div>
-            <div className="text-xs text-muted-foreground">
-              {msg.type === "sent" ? "Sent" : "Received"} at{" "}
-              {msg.time?.toString()}
-            </div>
-          </div>
-        ))}
-      </div>
+      <Phone>
+        <PhoneContent>
+          <PhoneScreen variant="imessage" name={name} avatar={url}>
+            WOOOOFUBEISB
+          </PhoneScreen>
+          <PhoneInterface variant="iphone" />
+        </PhoneContent>
+        <PhoneBezel variant="iphone-16-pro-black-titanium" />
+      </Phone>
     </div>
   );
 }
