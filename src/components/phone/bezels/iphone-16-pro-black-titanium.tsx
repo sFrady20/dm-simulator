@@ -5,7 +5,12 @@ export default function () {
 
   return (
     <>
-      <rect width="450" height="920" fill={`url(#pattern-${id})`} />
+      <rect
+        width="450"
+        height="920"
+        fill={`url(#pattern-${id})`}
+        className="pointer-events-none"
+      />
       <defs>
         <pattern
           id={`pattern-${id}`}

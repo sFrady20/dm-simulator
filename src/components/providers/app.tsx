@@ -8,14 +8,14 @@ import { immer } from "zustand/middleware/immer";
 type AppState = {
   contactName: string;
   contactAvatarUrl: string | undefined;
-  contactAvatarFileName: string | undefined;
+  contactOS: "iphone" | "android";
   messages: Message[];
 };
 
 const initialState: AppState = {
   contactName: "John Doe",
   contactAvatarUrl: undefined,
-  contactAvatarFileName: undefined,
+  contactOS: "iphone",
   messages: [],
 };
 

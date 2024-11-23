@@ -1,0 +1,15 @@
+.variables {
+  --screen-background: #ffffff;
+  --chrome: #ffffff;
+  --system-blue: #007aff;
+  --system-red: #ff3b30;
+  --primary-label: #000000;
+  --messaging-bubble: #e6e5eb;
+}
+
+/*
+.variables {
+  --screen-background: #000000;
+  --chrome: #000000;
+}
+*/

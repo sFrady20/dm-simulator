@@ -5,4 +5,5 @@ export type Message = {
   text: string;
   time: TimeValue;
   type: "sent" | "received";
+  read?: string;
 };

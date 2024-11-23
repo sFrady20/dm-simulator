@@ -3,18 +3,19 @@ import {
   ComponentPropsWithoutRef,
   ElementRef,
   forwardRef,
-  lazy,
   ReactNode,
   Suspense,
   useId,
   useMemo,
 } from "react";
+import styles from "./styles.module.css";
+import { cn } from "@/lib/utils";
 
 export const Phone = forwardRef<
   ElementRef<"svg">,
   ComponentPropsWithoutRef<"svg">
 >((props, ref) => {
-  const { children, style, ...rest } = props;
+  const { children, className, ...rest } = props;
 
   return (
     <svg
@@ -25,7 +26,7 @@ export const Phone = forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      style={{ "--screen-background": "white", ...style } as any}
+      className={cn(styles.variables, className)}
       {...rest}
     >
       <Suspense fallback={"Loading..."}>{children}</Suspense>
@@ -58,11 +59,12 @@ export const PhoneContent = function (props: { children?: ReactNode }) {
 
   return (
     <>
-      <g clip-path={`url(#clip-${id})`}>{children}</g>
+      <g mask={`url(#mask-${id})`}>{children}</g>
       <defs>
-        <clipPath id={`clip-${id}`}>
+        <mask id={`mask-${id}`}>
+          <rect width="450" height="920" fill="black" />
           <rect x="24" y="23" width="402" height="874" rx="48" fill="white" />
-        </clipPath>
+        </mask>
       </defs>
     </>
   );

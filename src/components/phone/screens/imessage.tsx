@@ -1,26 +1,33 @@
-import { ReactNode, useId } from "react";
+"use client";
 
-export default function (props: {
-  children?: ReactNode;
-  name?: string;
-  avatar?: string;
-}) {
-  const { children, name, avatar } = props;
+import { cn } from "@/lib/utils";
+import { ComponentProps, useId, ElementRef, forwardRef, useState } from "react";
+import { useApp } from "@/components/providers/app";
+import { cva } from "class-variance-authority";
+import { motion } from "motion/react";
+import { Message as MessageType } from "@/lib/types";
+import styles from "../styles.module.css";
+
+export default function (
+  props: {
+    name?: string;
+    avatar?: string;
+  } & ComponentProps<"div">
+) {
+  const { className, name, avatar, ...rest } = props;
 
   const id = useId();
 
   return (
     <>
       <foreignObject width="450" height="920">
-        <div
-          style={{
-            width: "100%",
-            height: "100%",
-            backgroundColor: "var(--screen-background)",
-          }}
-        >
-          <div className="w-[200px] h-[200px] bg-[blue]"></div>
-          {children}
+        <div className="grid grid-cols-1 grid-rows-1 w-full h-full bg-[var(--screen-background)]">
+          <div
+            {...rest}
+            className={cn("w-full h-full col-start-1 row-start-1", className)}
+          />
+          {/* Navigation Bar Blur Effect */}
+          <div className="w-full h-[162px] backdrop-blur-[25px] col-start-1 row-start-1" />
         </div>
       </foreignObject>
       {/* Input Bar */}
@@ -33,22 +40,20 @@ export default function (props: {
         />
         {/* Plus Button */}
         <g>
-          <g clip-path="url(#clip1_2003_5450)">
-            <rect
-              x="38"
-              y="820"
-              width="34"
-              height="34"
-              rx="17"
-              fill="#787880"
-              fill-opacity="0.16"
-            />
-            <path
-              d="M48.0522 837.007C48.0522 836.752 48.1436 836.534 48.3262 836.351C48.5088 836.163 48.7274 836.069 48.9819 836.069H54.0703V830.989C54.0703 830.734 54.1616 830.516 54.3442 830.333C54.5269 830.15 54.7454 830.059 55 830.059C55.2601 830.059 55.4814 830.15 55.6641 830.333C55.8467 830.516 55.938 830.734 55.938 830.989V836.069H61.0181C61.2726 836.069 61.4912 836.163 61.6738 836.351C61.8564 836.534 61.9478 836.752 61.9478 837.007C61.9478 837.267 61.8564 837.488 61.6738 837.671C61.4912 837.848 61.2726 837.937 61.0181 837.937H55.938V843.033C55.938 843.282 55.8467 843.498 55.6641 843.681C55.4814 843.863 55.2601 843.955 55 843.955C54.7454 843.955 54.5269 843.863 54.3442 843.681C54.1616 843.498 54.0703 843.282 54.0703 843.033V837.937H48.9819C48.7274 837.937 48.5088 837.848 48.3262 837.671C48.1436 837.488 48.0522 837.267 48.0522 837.007Z"
-              fill="#3C3C43"
-              fill-opacity="0.6"
-            />
-          </g>
+          <rect
+            x="38"
+            y="820"
+            width="34"
+            height="34"
+            rx="17"
+            fill="#787880"
+            fill-opacity="0.16"
+          />
+          <path
+            d="M48.0522 837.007C48.0522 836.752 48.1436 836.534 48.3262 836.351C48.5088 836.163 48.7274 836.069 48.9819 836.069H54.0703V830.989C54.0703 830.734 54.1616 830.516 54.3442 830.333C54.5269 830.15 54.7454 830.059 55 830.059C55.2601 830.059 55.4814 830.15 55.6641 830.333C55.8467 830.516 55.938 830.734 55.938 830.989V836.069H61.0181C61.2726 836.069 61.4912 836.163 61.6738 836.351C61.8564 836.534 61.9478 836.752 61.9478 837.007C61.9478 837.267 61.8564 837.488 61.6738 837.671C61.4912 837.848 61.2726 837.937 61.0181 837.937H55.938V843.033C55.938 843.282 55.8467 843.498 55.6641 843.681C55.4814 843.863 55.2601 843.955 55 843.955C54.7454 843.955 54.5269 843.863 54.3442 843.681C54.1616 843.498 54.0703 843.282 54.0703 843.033V837.937H48.9819C48.7274 837.937 48.5088 837.848 48.3262 837.671C48.1436 837.488 48.0522 837.267 48.0522 837.007Z"
+            fill="#3C3C43"
+            fill-opacity="0.6"
+          />
         </g>
         {/* Input */}
         <g>
@@ -73,7 +78,7 @@ export default function (props: {
         </g>
       </g>
       {/* Navigation Bar  */}
-      <g filter={`url(#filter-${id})`}>
+      <g>
         {/* Background */}
         <mask fill="white">
           <path d="M24 23H426V162H24V23Z" />
@@ -105,8 +110,8 @@ export default function (props: {
             rx="25"
             fill={`url(#pattern-${id})`}
           />
-          {/* Name */}
           <g>
+            {/* Name */}
             <text
               fill="black"
               xmlSpace="preserve"
@@ -115,12 +120,12 @@ export default function (props: {
               fontSize="11"
               letterSpacing="0px"
             >
-              <tspan x="197.5" y="151.41">
-                Stephen
+              <tspan x="225" y="151.41" text-anchor="middle">
+                {name}
               </tspan>
             </text>
-            {/* <text
-              id="Chevron"
+            {/* Chevron */}
+            <text
               fill="#3C3C43"
               fillOpacity="0.6"
               xmlSpace="preserve"
@@ -132,7 +137,7 @@ export default function (props: {
               <tspan x="244.643" y="150.699">
                 &#x10018a;
               </tspan>
-            </text> */}
+            </text>
           </g>
         </g>
         <g>
@@ -149,11 +154,6 @@ export default function (props: {
         </g>
       </g>
       <defs>
-        {/*
-        <filter id={`filter-${id}`} x="0" y="0" width="100%" height="100%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="10" />
-        </filter>
-        */}
         <filter
           id={`filter-${id}`}
           x="-26"
@@ -190,8 +190,107 @@ export default function (props: {
           width="135"
           height="135"
           xlinkHref={avatar || ""}
+          preserveAspectRatio="xMidYMid slice"
         />
       </defs>
     </>
   );
 }
+
+const messageRowVariants = cva(
+  "flex gap-[10px] items-center group justify-start",
+  {
+    variants: {
+      type: {
+        received: "flex-row",
+        sent: "flex-row-reverse",
+      },
+      isOver: {
+        true: "",
+        false: "",
+      },
+    },
+  }
+);
+
+const messageBubbleVariants = cva(
+  "max-w-[295px] px-[14px] py-[7px] rounded-[16px] text-[17px] text-left relative group cursor-default whitespace-pre-wrap",
+  {
+    variants: {
+      type: {
+        received: "bg-[var(--messaging-bubble)] text-[var(--primary-label)]",
+        sent: "bg-[var(--system-blue)] text-[#ffffff]",
+      },
+      isOver: {
+        true: "",
+        false: "",
+      },
+    },
+  }
+);
+
+const messageActionsVariants = cva(
+  "w-6 h-6 rounded-full bg-[var(--messaging-bubble)] flex-row items-center justify-center cursor-pointer opacity-60 hover:opacity-100 hidden group-hover:flex",
+  {
+    variants: {
+      destructive: {
+        true: "text-[var(--system-red)]",
+        false: "text-[var(--primary-label)]",
+      },
+    },
+    defaultVariants: { destructive: false },
+  }
+);
+
+export const IMessageScreenMessage = motion(
+  forwardRef<
+    ElementRef<"div">,
+    Omit<ComponentProps<"div">, "id"> & MessageType
+  >(function (props, ref) {
+    const { className, type, children, id, ...rest } = props;
+
+    const app = useApp();
+
+    return (
+      <div
+        ref={ref}
+        {...rest}
+        className={cn(messageRowVariants({ type }), className)}
+      >
+        <motion.div
+          className={cn(messageBubbleVariants({ type }), className)}
+          variants={{
+            initial: { opacity: 0, scale: 0.8 },
+            animate: { opacity: 1, scale: 1 },
+            exit: { opacity: 0, scale: 0.8 },
+          }}
+        >
+          {children}
+        </motion.div>
+        <>
+          <div
+            className={messageActionsVariants()}
+            onClick={() => {
+              app.setState((x) => {
+                //edit
+              });
+            }}
+          >
+            <i className="icon-[heroicons--pencil] text-xs" />
+          </div>
+          <div
+            className={messageActionsVariants({ destructive: true })}
+            onClick={() => {
+              app.setState((x) => {
+                const found = x.messages.findIndex((x) => x.id === id);
+                x.messages.splice(found, 1);
+              });
+            }}
+          >
+            <i className="icon-[heroicons--trash] text-xs" />
+          </div>
+        </>
+      </div>
+    );
+  })
+);
