@@ -1,9 +1,9 @@
-import { TimeValue } from "react-aria-components";
+import { DateValue } from "react-aria-components";
 
 export type Message = {
   id: number;
   text: string;
-  time: TimeValue;
+  time: DateValue;
   type: "sent" | "received";
   read?: string;
 };

@@ -10,6 +10,7 @@ import {
   TimeValue,
 } from "react-aria-components";
 import { forwardRef } from "react";
+import { cn } from "@/lib/utils";
 
 interface TimeInputProps
   extends Omit<TimeFieldProps<TimeValue>, "value" | "onChange"> {
@@ -20,14 +21,14 @@ interface TimeInputProps
 }
 
 const TimeInput = forwardRef<HTMLDivElement, TimeInputProps>(
-  ({ value, onValueChange, hint, label, ...props }, ref) => {
+  ({ value, onValueChange, hint, label, className, ...props }, ref) => {
     return (
       <TimeField
         ref={ref}
         value={value}
         onChange={onValueChange}
         {...props}
-        className="space-y-2"
+        className={cn("space-y-2", className)}
       >
         {label && (
           <Label className="text-sm font-medium text-foreground">{label}</Label>
@@ -45,13 +46,15 @@ const TimeInput = forwardRef<HTMLDivElement, TimeInputProps>(
             )}
           </DateInput>
         </div>
-        <p
-          className="mt-2 text-xs text-muted-foreground"
-          role="region"
-          aria-live="polite"
-        >
-          {hint}
-        </p>
+        {hint && (
+          <p
+            className="mt-2 text-xs text-muted-foreground"
+            role="region"
+            aria-live="polite"
+          >
+            {hint}
+          </p>
+        )}
       </TimeField>
     );
   }

@@ -1,11 +1,18 @@
 "use client";
 
 import { Message } from "@/lib/types";
+import { getLocalTimeZone, now } from "@internationalized/date";
 import { createContext, useContext, useMemo } from "react";
+import { TimeValue } from "react-aria-components";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 type AppState = {
+  systemTime: TimeValue;
+  systemSignalStrength: number;
+  systemWifiStrength: number;
+  systemBatteryLevel: number;
+  systemBatteryCharging: boolean;
   contactName: string;
   contactAvatarUrl: string | undefined;
   contactOS: "iphone" | "android";
@@ -13,6 +20,11 @@ type AppState = {
 };
 
 const initialState: AppState = {
+  systemTime: now(getLocalTimeZone()),
+  systemSignalStrength: 1,
+  systemWifiStrength: 1,
+  systemBatteryLevel: 1,
+  systemBatteryCharging: false,
   contactName: "John Doe",
   contactAvatarUrl: undefined,
   contactOS: "iphone",

@@ -1,12 +1,21 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ComponentProps, useId, ElementRef, forwardRef, useState } from "react";
+import {
+  ComponentProps,
+  useId,
+  ElementRef,
+  forwardRef,
+  useState,
+  useMemo,
+  ReactNode,
+} from "react";
 import { useApp } from "@/components/providers/app";
 import { cva } from "class-variance-authority";
-import { motion } from "motion/react";
-import { Message as MessageType } from "@/lib/types";
+import { AnimatePresence, motion } from "motion/react";
+import { Message, Message as MessageType } from "@/lib/types";
 import styles from "../styles.module.css";
+import { DateTime } from "luxon";
 
 export default function (
   props: {
@@ -21,7 +30,7 @@ export default function (
   return (
     <>
       <foreignObject width="450" height="920">
-        <div className="grid grid-cols-1 grid-rows-1 w-full h-full bg-[var(--screen-background)]">
+        <div className="grid grid-cols-1 grid-rows-1 w-full h-full bg-[var(--screen-background)] text-[var(--primary-label)]">
           <div
             {...rest}
             className={cn("w-full h-full col-start-1 row-start-1", className)}
@@ -221,11 +230,27 @@ const messageBubbleVariants = cva(
         received: "bg-[var(--messaging-bubble)] text-[var(--primary-label)]",
         sent: "bg-[var(--system-blue)] text-[#ffffff]",
       },
+      os: {
+        iphone: "",
+        android: "",
+      },
       isOver: {
         true: "",
         false: "",
       },
     },
+    compoundVariants: [
+      {
+        os: "iphone",
+        type: "sent",
+        className: "bg-[var(--system-blue)] text-[#ffffff]",
+      },
+      {
+        os: "android",
+        type: "sent",
+        className: "bg-[var(--system-green)] text-[#ffffff]",
+      },
+    ],
   }
 );
 
@@ -242,6 +267,90 @@ const messageActionsVariants = cva(
   }
 );
 
+function getSeparator(
+  message: Message,
+  previousMessage: Message
+): ReactNode | null {
+  const messageTime = DateTime.fromISO(message.time.toString());
+  const previousMessageTime = DateTime.fromISO(previousMessage.time.toString());
+
+  // Date change
+  if (!previousMessageTime?.hasSame(messageTime, "day")) {
+    return (
+      <div className="py-4 text-sm">
+        {messageTime.hasSame(DateTime.now(), "day") ? (
+          <>
+            <span className="font-bold">Today</span>
+            <span className="ml-1">
+              {messageTime.toLocaleString(DateTime.TIME_SIMPLE)}
+            </span>
+          </>
+        ) : (
+          messageTime.toLocaleString(DateTime.DATE_FULL)
+        )}
+      </div>
+    );
+  }
+
+  // Blank space
+  if (
+    previousMessage?.type !== message.type ||
+    (previousMessageTime &&
+      messageTime > previousMessageTime.plus({ minutes: 5 }))
+  ) {
+    return <div className="h-[20px]" />;
+  }
+
+  return <div className="h-[4px]" />;
+}
+
+export const IMessageScreenMessageList = function (props: {
+  messages: Message[];
+}) {
+  const { messages } = props;
+
+  const sortedMessages = useMemo(
+    () =>
+      messages.toSorted((a, b) =>
+        DateTime.fromISO(a.time.toString()) >=
+        DateTime.fromISO(b.time.toString())
+          ? 1
+          : -1
+      ),
+    [messages]
+  );
+
+  const messagesWithSeparators = useMemo(
+    () =>
+      sortedMessages.flatMap((message, i) => {
+        const previousMessage = sortedMessages[i - 1];
+        const separator = previousMessage
+          ? getSeparator(message, previousMessage)
+          : null;
+        return [
+          ...(separator ? [separator] : []),
+          <IMessageScreenMessage
+            key={message.id}
+            {...message}
+            variants={{
+              initial: {},
+              animate: {},
+              exit: {},
+            }}
+            initial={"initial"}
+            animate={"animate"}
+            exit={"exit"}
+          >
+            {message.text}
+          </IMessageScreenMessage>,
+        ];
+      }),
+    [sortedMessages]
+  );
+
+  return <div className="flex flex-col w-full">{messagesWithSeparators}</div>;
+};
+
 export const IMessageScreenMessage = motion(
   forwardRef<
     ElementRef<"div">,
@@ -250,6 +359,7 @@ export const IMessageScreenMessage = motion(
     const { className, type, children, id, ...rest } = props;
 
     const app = useApp();
+    const systemOS = app((x) => x.contactOS);
 
     return (
       <div
@@ -258,7 +368,10 @@ export const IMessageScreenMessage = motion(
         className={cn(messageRowVariants({ type }), className)}
       >
         <motion.div
-          className={cn(messageBubbleVariants({ type }), className)}
+          className={cn(
+            messageBubbleVariants({ type, os: systemOS }),
+            className
+          )}
           variants={{
             initial: { opacity: 0, scale: 0.8 },
             animate: { opacity: 1, scale: 1 },

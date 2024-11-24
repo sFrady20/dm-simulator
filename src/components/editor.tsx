@@ -5,10 +5,8 @@ import ImageUpload from "./ui/image-upload";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { MultilineInput } from "./ui/multiline-input";
-import TimeInput from "./ui/time-input";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
-import { TimeValue } from "react-aria-components";
 import {
   Phone,
   PhoneBezel,
@@ -16,9 +14,13 @@ import {
   PhoneInterface,
   PhoneScreen,
 } from "./phone";
-import { AnimatePresence } from "motion/react";
-import { IMessageScreenMessage as Message } from "./phone/screens/imessage";
+import { IMessageScreenMessageList as MessageList } from "./phone/screens/imessage";
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
+import { DateAndTimeInput } from "./ui/date-and-time-input";
+import { getLocalTimeZone, now } from "@internationalized/date";
+import { DateValue } from "react-aria-components";
+import TimeInput from "./ui/time-input";
+import { Slider } from "./ui/slider";
 
 export function EditorPreview() {
   const app = useApp();
@@ -28,41 +30,20 @@ export function EditorPreview() {
   const messages = app((x) => x.messages);
 
   return (
-    <div>
-      <Phone>
-        <PhoneContent>
-          <PhoneScreen
-            variant="imessage"
-            name={name}
-            avatar={url}
-            className="pt-[162px]"
-          >
-            <div className="px-[40px] py-[16px] flex flex-col gap-[10px] w-full">
-              <AnimatePresence>
-                {messages.map((message) => (
-                  <Message
-                    key={message.id}
-                    {...message}
-                    variants={{
-                      initial: {},
-                      animate: {},
-                      exit: {},
-                    }}
-                    initial={"initial"}
-                    animate={"animate"}
-                    exit={"exit"}
-                  >
-                    {message.text}
-                  </Message>
-                ))}
-              </AnimatePresence>
-            </div>
-          </PhoneScreen>
-          <PhoneInterface variant="iphone" />
-        </PhoneContent>
-        <PhoneBezel variant="iphone-16-pro-black-titanium" />
-      </Phone>
-    </div>
+    <Phone>
+      <PhoneContent>
+        <PhoneScreen
+          variant="imessage"
+          name={name}
+          avatar={url}
+          className="pt-[182px] pb-[16px] px-[40px]"
+        >
+          <MessageList messages={messages} />
+        </PhoneScreen>
+        <PhoneInterface variant="iphone" />
+      </PhoneContent>
+      <PhoneBezel variant="iphone-16-pro-black-titanium" />
+    </Phone>
   );
 }
 
@@ -70,20 +51,26 @@ const editor = create(
   immer<{
     type: "sent" | "received";
     message: string;
-    time: TimeValue | null;
+    time: DateValue | null;
   }>((set) => ({
     type: "received",
     message: "",
-    time: null,
+    time: now(getLocalTimeZone()),
   }))
 );
 
 export const EditorFields = () => {
   const app = useApp();
 
-  const avatarUrl = app((x) => x.contactAvatarUrl);
-  const name = app((x) => x.contactName);
-  const os = app((x) => x.contactOS);
+  const systemTime = app((x) => x.systemTime);
+  const systemSignalStrength = app((x) => x.systemSignalStrength);
+  const systemWifiStrength = app((x) => x.systemWifiStrength);
+  const systemBatteryLevel = app((x) => x.systemBatteryLevel);
+  const systemBatteryCharging = app((x) => x.systemBatteryCharging);
+
+  const contactAvatarUrl = app((x) => x.contactAvatarUrl);
+  const contactName = app((x) => x.contactName);
+  const contactOS = app((x) => x.contactOS);
 
   const newMessageType = editor((x) => x.type);
   const newMessage = editor((x) => x.message);
@@ -101,43 +88,84 @@ export const EditorFields = () => {
       });
       editor.setState((x) => {
         x.message = "";
+        x.time = x.time?.add({ minutes: 1 }) ?? null;
       });
     }
   };
 
   return (
-    <div>
-      <div className="flex flex-row items-center justify-center gap-4">
-        <ImageUpload
-          shape={"circle"}
-          url={avatarUrl}
-          onUrlChange={(url) =>
-            app.setState((x) => {
-              x.contactAvatarUrl = url;
-            })
-          }
-        />
-        <div className="flex flex-col gap-2">
-          <Input
-            value={name}
-            onChange={(e) => app.setState({ contactName: e.target.value })}
-          />
-          <Tabs
-            value={os}
-            onValueChange={(x) => app.setState({ contactOS: x as any })}
-          >
-            <TabsList className="w-full">
-              <TabsTrigger value="iphone" className="flex-1">
-                iPhone
-              </TabsTrigger>
-              <TabsTrigger value="android" className="flex-1">
-                Android
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col w-full">
+        <h3>Contact</h3>
+        <div className="flex flex-row items-center justify-center gap-4 w-full">
+          <div className="flex flex-col gap-2">
+            <ImageUpload
+              shape={"circle"}
+              url={contactAvatarUrl}
+              onUrlChange={(url) =>
+                app.setState((x) => {
+                  x.contactAvatarUrl = url;
+                })
+              }
+            />
+          </div>
+          <div className="flex flex-col gap-2 flex-1">
+            <Input
+              value={contactName}
+              onChange={(e) => app.setState({ contactName: e.target.value })}
+            />
+            <Tabs
+              value={contactOS}
+              onValueChange={(x) => app.setState({ contactOS: x as any })}
+            >
+              <TabsList className="w-full">
+                <TabsTrigger value="iphone" className="flex-1">
+                  iPhone
+                </TabsTrigger>
+                <TabsTrigger value="android" className="flex-1">
+                  Android
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
       </div>
-      <div className="mt-4">
+      <div className="flex flex-col gap-2 w-full">
+        <h3>System</h3>
+        <TimeInput
+          hideTimeZone
+          value={systemTime}
+          onValueChange={(x) => app.setState({ systemTime: x ?? undefined })}
+        />
+
+        <div>Signal strength</div>
+        <Slider
+          min={0}
+          max={1}
+          step={1 / 4}
+          value={[systemSignalStrength]}
+          onValueChange={([x]) => app.setState({ systemSignalStrength: x })}
+        />
+
+        <div>Wifi strength</div>
+        <Slider
+          min={0}
+          max={1}
+          step={1 / 3}
+          value={[systemWifiStrength]}
+          onValueChange={([x]) => app.setState({ systemWifiStrength: x })}
+        />
+
+        <div>Battery Level</div>
+        <Slider
+          min={0}
+          max={1}
+          step={1 / 9}
+          value={[systemBatteryLevel]}
+          onValueChange={([x]) => app.setState({ systemBatteryLevel: x })}
+        />
+      </div>
+      <div>
         <h3>Add Message</h3>
         <div className="flex flex-col gap-2">
           <Tabs
@@ -153,22 +181,27 @@ export const EditorFields = () => {
               </TabsTrigger>
             </TabsList>
           </Tabs>
-          <MultilineInput
-            value={newMessage}
-            onChange={(e) =>
-              editor.setState((x) => {
-                x.message = e.target.value;
-              })
-            }
-            placeholder="New message"
-          />
-          <TimeInput
+          <DateAndTimeInput
+            hideTimeZone
             value={newMessageTime || undefined}
             onValueChange={(x) => {
               editor.setState({ time: x });
             }}
           />
-          <Button onClick={addMessage}>Add</Button>
+          <div className="flex flex-row gap-2">
+            <MultilineInput
+              value={newMessage}
+              onChange={(e) =>
+                editor.setState((x) => {
+                  x.message = e.target.value;
+                })
+              }
+              placeholder="New message"
+            />
+            <Button onClick={addMessage} className="self-end">
+              Add
+            </Button>
+          </div>
         </div>
       </div>
     </div>
