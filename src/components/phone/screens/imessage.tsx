@@ -10,7 +10,7 @@ import {
   useMemo,
   ReactNode,
 } from "react";
-import { useApp } from "@/components/providers/app";
+import { useApp } from "@/components/app/provider";
 import { cva } from "class-variance-authority";
 import { AnimatePresence, motion } from "motion/react";
 import { Message, Message as MessageType } from "@/lib/types";
@@ -309,21 +309,49 @@ export const IMessageScreenMessageList = function (props: {
 }) {
   const { messages } = props;
 
-  const sortedMessages = useMemo(
+  const sortedMessagesWithTails = useMemo(
     () =>
-      messages.toSorted((a, b) =>
-        DateTime.fromISO(a.time.toString()) >=
-        DateTime.fromISO(b.time.toString())
-          ? 1
-          : -1
-      ),
+      messages
+        .toSorted((a, b) =>
+          DateTime.fromISO(a.time.toString()) >=
+          DateTime.fromISO(b.time.toString())
+            ? 1
+            : -1
+        )
+        .reduce((acc, message, i) => {
+          const previousMessage = acc[i - 1];
+
+          if (previousMessage) {
+            previousMessage.hasTail = (() => {
+              //not same type (sent vs received)
+              if (previousMessage.type !== message.type) return true;
+
+              const previousMessageTime = DateTime.fromISO(
+                previousMessage.time.toString()
+              );
+              const messageTime = DateTime.fromISO(message.time.toString());
+
+              //not same day
+              if (!previousMessageTime.hasSame(messageTime, "day")) return true;
+
+              //not 5 minutes apart
+              if (messageTime > previousMessageTime.plus({ minutes: 5 }))
+                return true;
+
+              return false;
+            })();
+          }
+
+          acc.push({ ...message, hasTail: true });
+          return acc;
+        }, [] as (Message & { hasTail?: boolean })[]),
     [messages]
   );
 
   const messagesWithSeparators = useMemo(
     () =>
-      sortedMessages.flatMap((message, i) => {
-        const previousMessage = sortedMessages[i - 1];
+      sortedMessagesWithTails.flatMap((message, i) => {
+        const previousMessage = sortedMessagesWithTails[i - 1];
         const separator = previousMessage
           ? getSeparator(message, previousMessage)
           : null;
@@ -345,7 +373,7 @@ export const IMessageScreenMessageList = function (props: {
           </IMessageScreenMessage>,
         ];
       }),
-    [sortedMessages]
+    [sortedMessagesWithTails]
   );
 
   return <div className="flex flex-col w-full">{messagesWithSeparators}</div>;
@@ -354,9 +382,9 @@ export const IMessageScreenMessageList = function (props: {
 export const IMessageScreenMessage = motion(
   forwardRef<
     ElementRef<"div">,
-    Omit<ComponentProps<"div">, "id"> & MessageType
+    Omit<ComponentProps<"div">, "id"> & MessageType & { hasTail?: boolean }
   >(function (props, ref) {
-    const { className, type, children, id, ...rest } = props;
+    const { className, type, children, id, hasTail, ...rest } = props;
 
     const app = useApp();
     const systemOS = app((x) => x.contactOS);
@@ -379,6 +407,35 @@ export const IMessageScreenMessage = motion(
           }}
         >
           {children}
+          {/* Tail */}
+          {hasTail && (
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className={cn(
+                "absolute",
+                type === "sent"
+                  ? "-right-[5px] -bottom-[5px] scale-x-[-1]"
+                  : "-left-[5px] -bottom-[5px]"
+              )}
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M0.797852 19.5H0.999564C11.493 19.5 19.9996 10.9934 19.9996 0.5H4.99989V3.5C4.99989 9.0858 4.99989 11.8787 4.21426 14.1239C3.49455 16.1807 2.31583 18.0127 0.797852 19.5Z"
+                fill={
+                  type === "sent"
+                    ? systemOS === "iphone"
+                      ? "var(--system-blue)"
+                      : "var(--system-green)"
+                    : "var(--messaging-bubble)"
+                }
+              />
+            </svg>
+          )}
         </motion.div>
         <>
           <div

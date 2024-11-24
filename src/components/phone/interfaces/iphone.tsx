@@ -1,4 +1,4 @@
-import { useApp } from "@/components/providers/app";
+import { useApp } from "@/components/app/provider";
 import { DateTime } from "luxon";
 import { ReactNode, useId } from "react";
 
