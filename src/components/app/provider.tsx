@@ -3,12 +3,12 @@
 import { Message } from "@/lib/types";
 import { getLocalTimeZone, now } from "@internationalized/date";
 import { createContext, useContext, useMemo } from "react";
-import { TimeValue } from "react-aria-components";
+import { DateValue, TimeValue } from "react-aria-components";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 type AppState = {
-  systemTime: TimeValue;
+  systemTime: DateValue;
   systemSignalStrength: number;
   systemWifiStrength: number;
   systemBatteryLevel: number;

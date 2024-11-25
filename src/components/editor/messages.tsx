@@ -47,22 +47,23 @@ export const EditorMessagesFields = () => {
           </TabsTrigger>
         </TabsList>
       </Tabs>
-      <DateAndTimeInput
-        hideTimeZone
-        value={newMessageTime || undefined}
-        onValueChange={(x) => {
-          editor.setState({ time: x });
-        }}
+      <MultilineInput
+        value={newMessage}
+        onChange={(e) =>
+          editor.setState((x) => {
+            x.message = e.target.value;
+          })
+        }
+        placeholder="New message"
       />
       <div className="flex flex-row gap-2">
-        <MultilineInput
-          value={newMessage}
-          onChange={(e) =>
-            editor.setState((x) => {
-              x.message = e.target.value;
-            })
-          }
-          placeholder="New message"
+        <DateAndTimeInput
+          hideTimeZone
+          className={"w-full"}
+          value={newMessageTime || undefined}
+          onValueChange={(x) => {
+            editor.setState({ time: x });
+          }}
         />
         <Button onClick={addMessage} className="self-end">
           Add

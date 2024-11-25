@@ -62,6 +62,15 @@ const config: Config = {
           "5": "hsl(var(--chart-5))",
         },
       },
+      keyframes: {
+        flash: {
+          "0%": { opacity: `1` },
+          "100%": { opacity: `0` },
+        },
+      },
+      animation: {
+        flash: "flash 1s ease-out 1 both",
+      },
     },
   },
   plugins: [require("tailwindcss-animate"), addDynamicIconSelectors()],

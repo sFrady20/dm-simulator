@@ -3,6 +3,7 @@
 import { useApp } from "@/components/app/provider";
 import TimeInput from "@/components/ui/time-input";
 import { Slider } from "@/components/ui/slider";
+import { DateAndTimeInput } from "../ui/date-and-time-input";
 
 export const EditorSystemFields = () => {
   const app = useApp();
@@ -15,38 +16,47 @@ export const EditorSystemFields = () => {
 
   return (
     <div>
-      <TimeInput
-        hideTimeZone
-        value={systemTime}
-        onValueChange={(x) => app.setState({ systemTime: x ?? undefined })}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <div>System Time</div>
+        <DateAndTimeInput
+          hideTimeZone
+          value={systemTime}
+          onValueChange={(x) => app.setState({ systemTime: x ?? undefined })}
+        />
+      </div>
 
-      <div>Signal strength</div>
-      <Slider
-        min={0}
-        max={1}
-        step={1 / 4}
-        value={[systemSignalStrength]}
-        onValueChange={([x]) => app.setState({ systemSignalStrength: x })}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <div>Signal strength</div>
+        <Slider
+          min={0}
+          max={1}
+          step={1 / 4}
+          value={[systemSignalStrength]}
+          onValueChange={([x]) => app.setState({ systemSignalStrength: x })}
+        />
+      </div>
 
-      <div>Wifi strength</div>
-      <Slider
-        min={0}
-        max={1}
-        step={1 / 3}
-        value={[systemWifiStrength]}
-        onValueChange={([x]) => app.setState({ systemWifiStrength: x })}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <div>Wifi strength</div>
+        <Slider
+          min={0}
+          max={1}
+          step={1 / 3}
+          value={[systemWifiStrength]}
+          onValueChange={([x]) => app.setState({ systemWifiStrength: x })}
+        />
+      </div>
 
-      <div>Battery Level</div>
-      <Slider
-        min={0}
-        max={1}
-        step={1 / 9}
-        value={[systemBatteryLevel]}
-        onValueChange={([x]) => app.setState({ systemBatteryLevel: x })}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <div>Battery Level</div>
+        <Slider
+          min={0}
+          max={1}
+          step={1 / 9}
+          value={[systemBatteryLevel]}
+          onValueChange={([x]) => app.setState({ systemBatteryLevel: x })}
+        />
+      </div>
     </div>
   );
 };

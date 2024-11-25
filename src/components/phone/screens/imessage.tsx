@@ -16,6 +16,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Message, Message as MessageType } from "@/lib/types";
 import styles from "../styles.module.css";
 import { DateTime } from "luxon";
+import { DateValue } from "react-aria-components";
 
 export default function (
   props: {
@@ -269,24 +270,60 @@ const messageActionsVariants = cva(
 
 function getSeparator(
   message: Message,
-  previousMessage: Message
+  previousMessage: Message | null,
+  systemTime: DateTime,
+  systemOS: "iphone" | "android"
 ): ReactNode | null {
   const messageTime = DateTime.fromISO(message.time.toString());
+
+  if (!previousMessage) {
+    return (
+      <div className="pb-4">
+        <div className="text-xs text-[var(--secondary-label)]">
+          {systemOS === "iphone" ? `iMessage` : `Text Message`}
+        </div>
+        <div className="text-xs text-[var(--secondary-label)]">
+          {!messageTime.hasSame(systemTime, "day") ? (
+            messageTime > systemTime.minus({ days: 7 }) ? (
+              <>
+                <span className="font-bold">
+                  {messageTime.toFormat("cccc")}
+                </span>
+                <span className="ml-1">
+                  {messageTime.toLocaleString(DateTime.TIME_SIMPLE)}
+                </span>
+              </>
+            ) : (
+              messageTime.toFormat("ccc, LLL d 'at' h:mm a")
+            )
+          ) : null}
+        </div>
+      </div>
+    );
+  }
+
   const previousMessageTime = DateTime.fromISO(previousMessage.time.toString());
 
   // Date change
   if (!previousMessageTime?.hasSame(messageTime, "day")) {
     return (
-      <div className="py-4 text-sm">
-        {messageTime.hasSame(DateTime.now(), "day") ? (
+      <div className="py-4 text-xs text-[var(--secondary-label)]">
+        {messageTime.hasSame(systemTime, "day") ? (
           <>
             <span className="font-bold">Today</span>
             <span className="ml-1">
               {messageTime.toLocaleString(DateTime.TIME_SIMPLE)}
             </span>
           </>
+        ) : messageTime < systemTime.plus({ days: 7 }) ? (
+          <>
+            <span className="font-bold">{messageTime.toFormat("cccc")}</span>
+            <span className="ml-1">
+              {messageTime.toLocaleString(DateTime.TIME_SIMPLE)}
+            </span>
+          </>
         ) : (
-          messageTime.toLocaleString(DateTime.DATE_FULL)
+          messageTime.toFormat("ccc, LLL d 'at' h:mm a")
         )}
       </div>
     );
@@ -308,6 +345,10 @@ export const IMessageScreenMessageList = function (props: {
   messages: Message[];
 }) {
   const { messages } = props;
+
+  const app = useApp();
+  const systemOS = app((x) => x.contactOS);
+  const systemTime = app((x) => x.systemTime);
 
   const sortedMessagesWithTails = useMemo(
     () =>
@@ -352,9 +393,12 @@ export const IMessageScreenMessageList = function (props: {
     () =>
       sortedMessagesWithTails.flatMap((message, i) => {
         const previousMessage = sortedMessagesWithTails[i - 1];
-        const separator = previousMessage
-          ? getSeparator(message, previousMessage)
-          : null;
+        const separator = getSeparator(
+          message,
+          previousMessage,
+          DateTime.fromISO(systemTime.toString()),
+          systemOS
+        );
         return [
           ...(separator ? [separator] : []),
           <IMessageScreenMessage
@@ -373,7 +417,7 @@ export const IMessageScreenMessageList = function (props: {
           </IMessageScreenMessage>,
         ];
       }),
-    [sortedMessagesWithTails]
+    [sortedMessagesWithTails, systemTime, systemOS]
   );
 
   return <div className="flex flex-col w-full">{messagesWithSeparators}</div>;
