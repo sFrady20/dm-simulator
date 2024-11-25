@@ -34,7 +34,7 @@ export function EditorPreview() {
           variant="imessage"
           name={name}
           avatar={url}
-          className="pt-[182px] pb-[16px] px-[40px]"
+          className="pt-[182px] pb-[140px] px-[40px] no-scrollbar"
         >
           <MessageList messages={messages} />
         </PhoneScreen>

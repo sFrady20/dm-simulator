@@ -6,6 +6,7 @@
   --system-red: #ff3b30;
   --primary-label: #000000;
   --secondary-label: #888888;
+  --tertiary-label: #c5c5c7;
   --messaging-bubble: #e6e5eb;
 }
 
@@ -17,5 +18,6 @@
   --system-red: #ff3b30; /* Todo */
   --primary-label: #ffffff; /* Todo */
   --secondary-label: #9c9ca3; /* Todo */
+  --tertiary-label: #464649;
   --messaging-bubble: #262629;
 }
