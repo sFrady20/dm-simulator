@@ -6,17 +6,14 @@ import {
   useId,
   ElementRef,
   forwardRef,
-  useState,
   useMemo,
   ReactNode,
 } from "react";
 import { useApp } from "@/components/app/provider";
 import { cva } from "class-variance-authority";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import { Message, Message as MessageType } from "@/lib/types";
-import styles from "../styles.module.css";
 import { DateTime } from "luxon";
-import { DateValue } from "react-aria-components";
 
 export default function (
   props: {
@@ -26,7 +23,7 @@ export default function (
 ) {
   const { className, name, avatar, ...rest } = props;
 
-  const id = useId();
+  const id = useId().replace(/[:]/g, "_");
 
   return (
     <>
@@ -199,7 +196,7 @@ export default function (
           id={`image-${id}`}
           width="135"
           height="135"
-          xlinkHref={avatar || ""}
+          xlinkHref={avatar || "/contact.png"}
           preserveAspectRatio="xMidYMid slice"
         />
       </defs>
@@ -482,16 +479,6 @@ export const IMessageScreenMessage = motion(
           )}
         </motion.div>
         <>
-          <div
-            className={messageActionsVariants()}
-            onClick={() => {
-              app.setState((x) => {
-                //edit
-              });
-            }}
-          >
-            <i className="icon-[heroicons--pencil] text-xs" />
-          </div>
           <div
             className={messageActionsVariants({ destructive: true })}
             onClick={() => {

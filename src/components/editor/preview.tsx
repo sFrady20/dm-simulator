@@ -9,16 +9,26 @@ import {
   PhoneScreen,
 } from "@/components/phone";
 import { IMessageScreenMessageList as MessageList } from "@/components/phone/screens/imessage";
+import { useEditor } from "./provider";
 
 export function EditorPreview() {
   const app = useApp();
+  const editor = useEditor();
 
   const name = app((x) => x.contactName);
   const url = app((x) => x.contactAvatarUrl);
   const messages = app((x) => x.messages);
+  const mode = app((x) => x.systemMode);
 
   return (
-    <Phone>
+    <Phone
+      ref={(el) => {
+        editor.setState((x) => {
+          x.phoneEl = el as any;
+        });
+      }}
+      mode={mode}
+    >
       <PhoneContent>
         <PhoneScreen
           variant="imessage"

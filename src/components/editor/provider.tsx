@@ -10,12 +10,14 @@ type EditorState = {
   type: "sent" | "received";
   message: string;
   time: DateValue | null;
+  phoneEl: SVGSVGElement | null;
 };
 
 const initialState: EditorState = {
   type: "received",
   message: "",
   time: now(getLocalTimeZone()),
+  phoneEl: null,
 };
 
 const makeStore = () =>

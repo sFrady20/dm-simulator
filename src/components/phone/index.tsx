@@ -13,9 +13,11 @@ import { cn } from "@/lib/utils";
 
 export const Phone = forwardRef<
   ElementRef<"svg">,
-  ComponentPropsWithoutRef<"svg">
+  Omit<ComponentPropsWithoutRef<"svg">, "id" | "mode"> & {
+    mode?: "light" | "dark";
+  }
 >((props, ref) => {
-  const { children, className, ...rest } = props;
+  const { children, className, mode = "light", ...rest } = props;
 
   return (
     <svg
@@ -26,7 +28,7 @@ export const Phone = forwardRef<
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      className={cn(styles.variables, className)}
+      className={cn(styles[mode], className)}
       {...rest}
     >
       <Suspense fallback={"Loading..."}>{children}</Suspense>
@@ -55,13 +57,13 @@ export const PhoneBezel = function (props: {
 export const PhoneContent = function (props: { children?: ReactNode }) {
   const { children, ...rest } = props;
 
-  const id = useId();
+  const id = useId().replace(/[:]/g, "_");
 
   return (
     <>
       <g mask={`url(#mask-${id})`}>{children}</g>
       <defs>
-        <mask id={`mask-${id}`}>
+        <mask id={`mask-${id}`} data-role="screen_mask">
           <rect width="450" height="920" fill="black" />
           <rect x="24" y="23" width="402" height="874" rx="48" fill="white" />
         </mask>

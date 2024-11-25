@@ -4,6 +4,7 @@ import { useApp } from "@/components/app/provider";
 import TimeInput from "@/components/ui/time-input";
 import { Slider } from "@/components/ui/slider";
 import { DateAndTimeInput } from "../ui/date-and-time-input";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 
 export const EditorSystemFields = () => {
   const app = useApp();
@@ -13,6 +14,7 @@ export const EditorSystemFields = () => {
   const systemWifiStrength = app((x) => x.systemWifiStrength);
   const systemBatteryLevel = app((x) => x.systemBatteryLevel);
   const systemBatteryCharging = app((x) => x.systemBatteryCharging);
+  const systemMode = app((x) => x.systemMode);
 
   return (
     <div>
@@ -56,6 +58,19 @@ export const EditorSystemFields = () => {
           value={[systemBatteryLevel]}
           onValueChange={([x]) => app.setState({ systemBatteryLevel: x })}
         />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>Mode</div>
+        <Tabs
+          value={systemMode}
+          onValueChange={(x) => app.setState({ systemMode: x as any })}
+        >
+          <TabsList>
+            <TabsTrigger value="light">Light</TabsTrigger>
+            <TabsTrigger value="dark">Dark</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
     </div>
   );

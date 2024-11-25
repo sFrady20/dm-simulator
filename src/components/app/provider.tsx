@@ -13,6 +13,7 @@ type AppState = {
   systemWifiStrength: number;
   systemBatteryLevel: number;
   systemBatteryCharging: boolean;
+  systemMode: "light" | "dark";
   contactName: string;
   contactAvatarUrl: string | undefined;
   contactOS: "iphone" | "android";
@@ -25,6 +26,7 @@ const initialState: AppState = {
   systemWifiStrength: 1,
   systemBatteryLevel: 1,
   systemBatteryCharging: false,
+  systemMode: "light",
   contactName: "John Doe",
   contactAvatarUrl: undefined,
   contactOS: "iphone",

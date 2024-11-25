@@ -1,7 +1,7 @@
 import { ReactNode, useId } from "react";
 
 export default function () {
-  const id = useId();
+  const id = useId().replace(/[:]/g, "_");
 
   return (
     <>
@@ -10,6 +10,7 @@ export default function () {
         height="920"
         fill={`url(#pattern-${id})`}
         className="pointer-events-none"
+        data-role="bezel" //for screenshot filter
       />
       <defs>
         <pattern

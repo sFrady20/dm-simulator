@@ -1,12 +1,8 @@
 import { useApp } from "@/components/app/provider";
 import { DateTime } from "luxon";
-import { ReactNode, useId } from "react";
+import { ReactNode } from "react";
 
-export default function (props: { children?: ReactNode }) {
-  const { children } = props;
-
-  const id = useId();
-
+export default function () {
   const app = useApp();
   const systemTime = app((x) => x.systemTime.toString());
   const systemSignalStrength = app((x) => x.systemSignalStrength);
