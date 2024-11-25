@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { useEditor } from "./provider";
-import { toBlob, toPng } from "html-to-image";
+import { toPng } from "html-to-image";
 
 export const EditorScreenshot = () => {
   const [flashKey, setFlashKey] = useState<number | null>(null);

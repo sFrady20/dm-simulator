@@ -16,6 +16,7 @@ export const EditorContactFields = () => {
     <div className="flex flex-row items-center justify-center gap-4 w-full">
       <div className="flex flex-col gap-2">
         <ImageUpload
+          format="data-url"
           shape={"circle"}
           url={contactAvatarUrl}
           onUrlChange={(url) =>

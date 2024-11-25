@@ -66,9 +66,13 @@ export const EditorSystemFields = () => {
           value={systemMode}
           onValueChange={(x) => app.setState({ systemMode: x as any })}
         >
-          <TabsList>
-            <TabsTrigger value="light">Light</TabsTrigger>
-            <TabsTrigger value="dark">Dark</TabsTrigger>
+          <TabsList className="w-full">
+            <TabsTrigger value="light" className="flex-1">
+              Light
+            </TabsTrigger>
+            <TabsTrigger value="dark" className="flex-1">
+              Dark
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>

@@ -12,4 +12,10 @@
 .dark {
   --screen-background: #000000;
   --chrome: #000000;
+  --system-blue: #0a84ff;
+  --system-green: #53d769; /* Todo */
+  --system-red: #ff3b30; /* Todo */
+  --primary-label: #ffffff; /* Todo */
+  --secondary-label: #9c9ca3; /* Todo */
+  --messaging-bubble: #262629;
 }

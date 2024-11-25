@@ -14,13 +14,21 @@ const variants = cva("", {
 
 export default function ImageUpload(
   props: {
+    format?: "blob-url" | "data-url";
     url?: string;
     onUrlChange?: (url: string | undefined) => void;
     fileName?: string;
     onFileNameChange?: (fileName: string | undefined) => void;
   } & VariantProps<typeof variants>
 ) {
-  const { url, onUrlChange, fileName, onFileNameChange, shape } = props;
+  const {
+    url,
+    onUrlChange,
+    fileName,
+    onFileNameChange,
+    format = "blob-url",
+    shape,
+  } = props;
 
   const previewRef = useRef<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -34,12 +42,23 @@ export default function ImageUpload(
       const file = event.target.files?.[0];
       if (file) {
         onFileNameChange?.(file.name);
-        const url = URL.createObjectURL(file);
-        previewRef.current = url;
-        onUrlChange?.(url);
+
+        if (format === "blob-url") {
+          const dataUrl = URL.createObjectURL(file);
+          previewRef.current = dataUrl;
+          onUrlChange?.(dataUrl);
+        } else if (format === "data-url") {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const dataUrl = e.target?.result as string;
+            previewRef.current = dataUrl;
+            onUrlChange?.(dataUrl);
+          };
+          reader.readAsDataURL(file);
+        }
       }
     },
-    []
+    [format]
   );
 
   const handleRemove = useCallback(() => {
