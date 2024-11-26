@@ -17,7 +17,7 @@ export const EditorScreenshot = () => {
       {flashKey != null && (
         <div
           key={flashKey}
-          className="fixed pointer-events-none inset-0 z-[100] bg-white animate-flash"
+          className="fixed pointer-events-none inset-0 z-[200] bg-white animate-flash"
         />
       )}
       <Button
@@ -53,27 +53,36 @@ export const EditorScreenshot = () => {
             canvas.height = 920;
             const ctx = canvas.getContext("2d");
 
-            const cutoff = 24;
+            const bezelMargin = 24;
 
             // Set canvas size to image size minus 48px (24px on each side)
-            canvas.width = img.width - cutoff * 2;
-            canvas.height = img.height - cutoff * 2;
+            canvas.width = img.width - bezelMargin * 2;
+            canvas.height = img.height - bezelMargin * 2;
 
             // Draw the image on the canvas with negative offsets to crop
-            ctx!.drawImage(img, -cutoff, -cutoff, img.width, img.height);
+            ctx!.drawImage(
+              img,
+              -bezelMargin,
+              -bezelMargin,
+              img.width,
+              img.height
+            );
 
             // Convert the cropped canvas to a Blob
-            const croppedBlob = await new Promise<Blob | null>((resolve) => {
-              canvas.toBlob(resolve, "image/png");
-            });
+            const screenshot = canvas.toDataURL("image/png");
+            editor.setState({ screenshot });
 
-            if (!croppedBlob) throw new Error("Failed to create blob");
+            // const croppedBlob = await new Promise<Blob | null>((resolve) => {
+            //   canvas.toBlob(resolve, "image/png");
+            // });
 
-            // Create a link to download the cropped image
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(croppedBlob);
-            link.download = "phone_screenshot.png";
-            link.click();
+            // if (!croppedBlob) throw new Error("Failed to create blob");
+
+            // // Create a link to download the cropped image
+            // const link = document.createElement("a");
+            // link.href = URL.createObjectURL(croppedBlob);
+            // link.download = "phone_screenshot.png";
+            // link.click();
           } catch (err: any) {
             console.error(err);
             toast.error(`Failed to take screenshot: ${err.message || err}`, {

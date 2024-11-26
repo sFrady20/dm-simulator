@@ -8,6 +8,7 @@ import { Page } from "@/components/ui/page";
 import { Section, SectionContainer } from "@/components/ui/section";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { EditorPopup } from "@/components/editor/popup";
 
 const Footer = () => {
   return (
@@ -103,6 +104,7 @@ export default function Home() {
             </div>
           </SectionContainer>
         </Section>
+        <EditorPopup />
       </Page>
     </EditorProvider>
   );

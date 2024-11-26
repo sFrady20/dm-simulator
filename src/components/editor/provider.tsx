@@ -11,6 +11,7 @@ type EditorState = {
   message: string;
   time: DateValue | null;
   phoneEl: SVGSVGElement | null;
+  screenshot: string | null;
 };
 
 const initialState: EditorState = {
@@ -18,6 +19,7 @@ const initialState: EditorState = {
   message: "",
   time: now(getLocalTimeZone()),
   phoneEl: null,
+  screenshot: null,
 };
 
 const makeStore = () =>
