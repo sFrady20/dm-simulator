@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     images: [
       {
-        url: "https://onblast.vercel.app/og.png",
+        url: "https://onblast.vercel.app/opengraph-image.png",
         width: 561,
         height: 281,
       },
