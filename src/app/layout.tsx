@@ -10,16 +10,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Text Message Simulator",
   description: "Imagine conversations that never happened",
-  metadataBase: new URL("https://onblast.vercel.app/"),
-  openGraph: {
-    images: [
-      {
-        url: "https://onblast.vercel.app/og.png",
-        width: 561,
-        height: 281,
-      },
-    ],
-  },
+  metadataBase: new URL("https://on-blast.vercel.app/"),
 };
 
 export default function RootLayout({
