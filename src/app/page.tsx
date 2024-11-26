@@ -61,8 +61,8 @@ export default function Home() {
             <div className="flex flex-col items-center md:flex-row md:items-stretch gap-8">
               <div className="text-left flex-1 max-w-[420px] flex flex-col justify-center">
                 <div className="sticky top-8 flex flex-col items-center gap-4">
-                  <div className="rounded-[20px] bg-[#0a84ff] text-[white] p-3 self-start relative">
-                    Text Message Simulator
+                  <div className="rounded-[20px] bg-[#0a84ff] text-[white] p-3 md:self-start relative">
+                    DM Simulator
                     <svg
                       width="20"
                       height="20"
@@ -79,7 +79,7 @@ export default function Home() {
                       />
                     </svg>
                   </div>
-                  <div className="flex flex-col gap-6 bg-foreground/5 p-6 rounded-xl border">
+                  <div className="flex flex-col gap-6 bg-foreground/5 p-6 rounded-xl border mx-4">
                     <EditorContactFields />
                     <EditorSystemFields />
                     <EditorMessagesFields />

@@ -1,4 +1,4 @@
-# Text Message Simulator
+# DM Simulator
 
 A modern web application for creating and simulating mobile messaging interfaces with advanced editing capabilities.
 

@@ -2,7 +2,6 @@
 
 import { useApp } from "@/components/app/provider";
 import { Button } from "@/components/ui/button";
-import { MultilineInput } from "@/components/ui/multiline-input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DateAndTimeInput } from "@/components/ui/date-and-time-input";
 import { useEditor } from "./provider";
@@ -35,7 +34,7 @@ export const EditorMessagesFields = () => {
 
   return (
     <div className="flex flex-col gap-2 p-2 bg-secondary rounded-lg">
-      <div className="flex flex-row items-center gap-2">
+      <div className="flex flex-col md:flex-row items-center gap-2">
         <DateAndTimeInput
           hideTimeZone
           className={"w-full"}
@@ -47,8 +46,9 @@ export const EditorMessagesFields = () => {
         <Tabs
           value={newMessageType}
           onValueChange={(x) => editor.setState({ type: x as any })}
+          className="w-full md:w-auto"
         >
-          <TabsList>
+          <TabsList className="w-full md:w-auto">
             <TabsTrigger value="received" className="flex-1">
               Received
             </TabsTrigger>
