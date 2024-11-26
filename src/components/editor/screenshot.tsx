@@ -49,9 +49,11 @@ export const EditorScreenshot = () => {
 
             // Create a canvas to crop the image
             const canvas = document.createElement("canvas");
+            canvas.width = 450;
+            canvas.height = 920;
             const ctx = canvas.getContext("2d");
 
-            const cutoff = 48;
+            const cutoff = 24;
 
             // Set canvas size to image size minus 48px (24px on each side)
             canvas.width = img.width - cutoff * 2;
