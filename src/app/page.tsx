@@ -7,8 +7,6 @@ import { EditorSystemFields } from "@/components/editor/system";
 import { Page } from "@/components/ui/page";
 import { Section, SectionContainer } from "@/components/ui/section";
 import Link from "next/link";
-import Logo from "./logo.png";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const Footer = () => {
