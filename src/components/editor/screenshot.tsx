@@ -51,12 +51,14 @@ export const EditorScreenshot = () => {
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
 
+            const cutoff = 48;
+
             // Set canvas size to image size minus 48px (24px on each side)
-            canvas.width = img.width - 96;
-            canvas.height = img.height - 96;
+            canvas.width = img.width - cutoff * 2;
+            canvas.height = img.height - cutoff * 2;
 
             // Draw the image on the canvas with negative offsets to crop
-            ctx!.drawImage(img, -48, -48, img.width, img.height);
+            ctx!.drawImage(img, -cutoff, -cutoff, img.width, img.height);
 
             // Convert the cropped canvas to a Blob
             const croppedBlob = await new Promise<Blob | null>((resolve) => {

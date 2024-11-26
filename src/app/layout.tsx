@@ -11,6 +11,15 @@ export const metadata: Metadata = {
   title: "Text Message Simulator",
   description: "Imagine conversations that never happened",
   metadataBase: new URL("https://onblast.vercel.app/"),
+  openGraph: {
+    images: [
+      {
+        url: "https://onblast.vercel.app/og.png",
+        width: 561,
+        height: 281,
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
