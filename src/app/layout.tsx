@@ -8,7 +8,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Text Message Simulator",
+  title: "DM Simulator",
   description: "Imagine conversations that never happened",
   metadataBase: new URL("https://dm-simulator.vercel.app/"),
   twitter: {
