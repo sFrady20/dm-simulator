@@ -27,15 +27,11 @@ export function EditorPreview() {
           x.phoneEl = el as any;
         });
       }}
+      className="md:max-h-[calc(100vh-64px)]"
       mode={mode}
     >
       <PhoneContent>
-        <PhoneScreen
-          variant="imessage"
-          name={name}
-          avatar={url}
-          className="pt-[182px] pb-[140px] px-[40px] no-scrollbar"
-        >
+        <PhoneScreen variant="imessage" name={name} avatar={url}>
           <MessageList messages={messages} />
         </PhoneScreen>
         <PhoneInterface variant="iphone" />

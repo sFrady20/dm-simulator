@@ -31,6 +31,10 @@ export const EditorScreenshot = () => {
             // Convert the SVG to a PNG
             const pngDataUrl = await toPng(phoneEl as any, {
               cacheBust: true,
+              width: 402,
+              height: 874,
+              canvasWidth: 402,
+              canvasHeight: 874,
               filter: (node) => {
                 if (node?.getAttribute?.("data-role") === "bezel") return false;
                 if (node?.getAttribute?.("data-role") === "screen_mask")
@@ -75,7 +79,8 @@ export const EditorScreenshot = () => {
           }
         }}
       >
-        Screenshot
+        <i className="icon-[heroicons--camera-solid] text-lg" />
+        <div>Screenshot</div>
       </Button>
     </div>
   );

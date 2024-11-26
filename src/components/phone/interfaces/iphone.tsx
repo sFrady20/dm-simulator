@@ -94,10 +94,14 @@ export default function () {
           <rect
             x="365.007"
             y="50.5"
-            width="21"
+            width={21 * systemBatteryLevel}
             height="9"
             rx="2.5"
-            fill={`var(--primary-label)`}
+            fill={
+              systemBatteryLevel < 0.4
+                ? `var(--system-red)`
+                : `var(--primary-label)`
+            }
           />
         </g>
       </g>

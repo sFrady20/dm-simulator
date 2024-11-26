@@ -35,12 +35,12 @@ export const EditorContactFields = () => {
           value={contactOS}
           onValueChange={(x) => app.setState({ contactOS: x as any })}
         >
-          <TabsList className="w-full">
+          <TabsList>
             <TabsTrigger value="iphone" className="flex-1">
-              iPhone
+              <i className="icon-[simple-icons--apple]" />
             </TabsTrigger>
             <TabsTrigger value="android" className="flex-1">
-              Android
+              <i className="icon-[simple-icons--android]" />
             </TabsTrigger>
           </TabsList>
         </Tabs>

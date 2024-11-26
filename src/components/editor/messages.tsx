@@ -6,6 +6,7 @@ import { MultilineInput } from "@/components/ui/multiline-input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DateAndTimeInput } from "@/components/ui/date-and-time-input";
 import { useEditor } from "./provider";
+import { Composer } from "../ui/composer";
 
 export const EditorMessagesFields = () => {
   const app = useApp();
@@ -33,30 +34,8 @@ export const EditorMessagesFields = () => {
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <Tabs
-        value={newMessageType}
-        onValueChange={(x) => editor.setState({ type: x as any })}
-      >
-        <TabsList className="w-full">
-          <TabsTrigger value="received" className="flex-1">
-            Received
-          </TabsTrigger>
-          <TabsTrigger value="sent" className="flex-1">
-            Sent
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
-      <MultilineInput
-        value={newMessage}
-        onChange={(e) =>
-          editor.setState((x) => {
-            x.message = e.target.value;
-          })
-        }
-        placeholder="New message"
-      />
-      <div className="flex flex-row gap-2">
+    <div className="flex flex-col gap-2 p-2 bg-secondary rounded-lg">
+      <div className="flex flex-row items-center gap-2">
         <DateAndTimeInput
           hideTimeZone
           className={"w-full"}
@@ -65,10 +44,39 @@ export const EditorMessagesFields = () => {
             editor.setState({ time: x });
           }}
         />
-        <Button onClick={addMessage} className="self-end">
-          Add
-        </Button>
+        <Tabs
+          value={newMessageType}
+          onValueChange={(x) => editor.setState({ type: x as any })}
+        >
+          <TabsList>
+            <TabsTrigger value="received" className="flex-1">
+              Received
+            </TabsTrigger>
+            <TabsTrigger value="sent" className="flex-1">
+              Sent
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
+      <Composer
+        value={newMessage}
+        onChange={(e) =>
+          editor.setState((x) => {
+            x.message = e.target.value;
+          })
+        }
+        placeholder="New message"
+      >
+        <Button
+          onClick={addMessage}
+          className="self-end pointer-events-auto"
+          size={"sm"}
+          variant={"ghost"}
+        >
+          <i className="icon-[heroicons--paper-airplane] text-lg" />
+          <div>Add Message</div>
+        </Button>
+      </Composer>
     </div>
   );
 };

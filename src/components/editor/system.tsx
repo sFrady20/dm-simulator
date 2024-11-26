@@ -17,8 +17,8 @@ export const EditorSystemFields = () => {
   const systemMode = app((x) => x.systemMode);
 
   return (
-    <div>
-      <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-subgrid col-span-2 gap-4 items-center">
         <div>System Time</div>
         <DateAndTimeInput
           hideTimeZone
@@ -27,7 +27,7 @@ export const EditorSystemFields = () => {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-subgrid col-span-2 gap-4 items-center">
         <div>Signal strength</div>
         <Slider
           min={0}
@@ -38,7 +38,7 @@ export const EditorSystemFields = () => {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-subgrid col-span-2 gap-4 items-center">
         <div>Wifi strength</div>
         <Slider
           min={0}
@@ -49,7 +49,7 @@ export const EditorSystemFields = () => {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-subgrid col-span-2 gap-4 items-center">
         <div>Battery Level</div>
         <Slider
           min={0}
@@ -60,7 +60,7 @@ export const EditorSystemFields = () => {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-subgrid col-span-2 gap-4 items-center">
         <div>Mode</div>
         <Tabs
           value={systemMode}

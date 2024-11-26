@@ -46,7 +46,7 @@ export default function (
           <div
             {...rest}
             className={cn(
-              "w-full h-full col-start-1 row-start-1 overflow-scroll",
+              "w-full h-full col-start-1 row-start-1 overflow-scroll pt-[182px] pb-[140px] px-[40px] no-scrollbar",
               className
             )}
           />
