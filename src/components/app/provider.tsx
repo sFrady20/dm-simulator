@@ -20,6 +20,16 @@ type AppState = {
   messages: Message[];
 };
 
+function generateRandomPhoneNumber() {
+  let phoneNumber = "+1 ";
+  for (let i = 0; i < 3; i++) phoneNumber += Math.floor(Math.random() * 10);
+  phoneNumber += "-";
+  for (let i = 0; i < 3; i++) phoneNumber += Math.floor(Math.random() * 10);
+  phoneNumber += "-";
+  for (let i = 0; i < 4; i++) phoneNumber += Math.floor(Math.random() * 10);
+  return phoneNumber;
+}
+
 const initialState: AppState = {
   systemTime: now(getLocalTimeZone()),
   systemSignalStrength: 1,
@@ -27,7 +37,7 @@ const initialState: AppState = {
   systemBatteryLevel: 1,
   systemBatteryCharging: false,
   systemMode: "light",
-  contactName: "John Doe",
+  contactName: generateRandomPhoneNumber(),
   contactAvatarUrl: undefined,
   contactOS: "iphone",
   messages: [],

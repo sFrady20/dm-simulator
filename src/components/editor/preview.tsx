@@ -27,7 +27,7 @@ export function EditorPreview() {
           x.phoneEl = el as any;
         });
       }}
-      className="md:max-h-[calc(100vh-64px)]"
+      className="md:max-h-[calc(100vh-64px)] w-full md:w-auto"
       mode={mode}
     >
       <PhoneContent>

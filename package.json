@@ -21,6 +21,7 @@
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "ga-gtag": "^1.2.0",
     "html-to-image": "1.10.4",
     "immer": "^10.1.1",
     "lucide-react": "^0.460.0",

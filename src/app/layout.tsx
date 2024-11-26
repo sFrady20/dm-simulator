@@ -7,8 +7,8 @@ import { Toaster } from "@/components/ui/sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "On Blast",
-  description: "Fake text message screenshots",
+  title: "Text Message Simulator",
+  description: "Imagine conversations that never happened",
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen dark`}>
+      <body className={`${inter.className} min-h-screen dark:dark`}>
         <AppProvider>
           {children}
           <Toaster richColors />
