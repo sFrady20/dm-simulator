@@ -3,11 +3,13 @@
 import "react-image-crop/dist/ReactCrop.css";
 import { default as NextImage } from "next/image";
 import { useEditor } from "./provider";
-import { Dialog, DialogContent } from "../ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Crop, ReactCrop } from "react-image-crop";
-import { useCallback, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "motion/react";
 
 const cropped = (
   screenshot: string | null,
@@ -43,6 +45,15 @@ export const EditorPopup = function () {
   const screenshot = editor((x) => x.screenshot);
 
   const [crop, setCrop] = useState<Crop>();
+  const [wasCopied, setWasCopied] = useState(false);
+
+  useEffect(() => {
+    if (wasCopied) {
+      setTimeout(() => {
+        setWasCopied(false);
+      }, 2000);
+    }
+  }, [wasCopied]);
 
   if (!screenshot) return null;
 
@@ -53,8 +64,11 @@ export const EditorPopup = function () {
         if (!open) editor.setState({ screenshot: null });
       }}
     >
-      <DialogContent className="flex flex-col md:flex-row gap-0 max-w-[800px] w-auto p-0">
-        <div className="w-[500px] bg-black rounded-xl p-8">
+      <DialogContent className="flex flex-col md:flex-row gap-0 max-w-[100vw] md:max-w-[800px] w-full md:w-auto p-0">
+        <DialogHeader className="hidden">
+          <DialogTitle>Screenshot</DialogTitle>
+        </DialogHeader>
+        <div className="w-full md:w-[500px] bg-black rounded-xl p-8">
           <ReactCrop crop={crop} onChange={(c) => setCrop(c)}>
             <NextImage
               ref={imageRef}
@@ -99,9 +113,27 @@ export const EditorPopup = function () {
                   "image/png": blob,
                 }),
               ]);
+              setWasCopied(true);
             }}
           >
-            <i className="icon-[heroicons--clipboard] text-lg" />
+            <AnimatePresence mode="wait">
+              <motion.i
+                key={wasCopied ? "copied" : "default"}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  transition: { duration: 0.1 },
+                }}
+                exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.1 } }}
+                className={cn(
+                  "text-lg",
+                  wasCopied
+                    ? "icon-[heroicons--clipboard-document-check] text-green-500"
+                    : "icon-[heroicons--clipboard]"
+                )}
+              />
+            </AnimatePresence>
             <div>Copy to clipboard</div>
           </Button>
         </div>
